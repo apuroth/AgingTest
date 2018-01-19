@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">老化测试</string>
+    <array name="test_list">
+        <item>喇叭测试</item>
+        <item>听筒测试</item>
+    </array>
+    <string name="starttime">开始时间：</string>
+    <string name="stoptime">结束时间：</string>
+    <string name="start">开始</string>
+    <string name="stop">结束</string>
+    <string name="lounder_test">喇叭测试</string>
+    <string name="mic_test">听筒测试</string>
+
+    <string name="normal_sound">普通音源</string>
+    <string name="special_sound">特殊音源</string>
+
+    <drawable name="bkcolor_g">#363636</drawable>
+    <drawable name="bkcolor_r">#FF1111</drawable>
+
+    <string name="battery_unknown">未知错误</string>
+    <string name="battery_good">状态良好</string>
+    <string name="battery_dead">电池没有电</string>
+    <string name="battery_over">电池电压过高</string>
+    <string name="battery_heat">电池过热</string>
+    <string name="battery_cold">电池过冷</string>
+
+    <string name="battery_charging">充电状态</string>
+    <string name="battery_discharging">放电状态</string>
+    <string name="battery_not_charging">未充电状态</string>
+    <string name="battery_full">充满电</string>
+    <string name="battery_status_unknown">未知状态</string>
+
+
+    <string name="speaker">视频和扬声器</string>
+    <string name="receiver">视频和听筒</string>
+    <string name="vibrate">振动器</string>
+    <string name="mic">麦克风</string>
+    <string name="back_camera">后摄像头</string>
+    <string name="front_camera">前摄像头</string>
+    <string name="item_time">单项测试时间:</string>
+    <string name="all_time">总持续时间:</string>
+
+    <string name="minute">分</string>
+    <string name="default_item_time">15</string>
+    <string name="default_all_time">240</string>
+
+    <string name="last_test">测试结果:</string>
+    <string name="test_warning">请选择测试选项</string>
+</resources>
