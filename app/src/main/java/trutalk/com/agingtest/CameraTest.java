@@ -148,6 +148,9 @@ public class CameraTest extends Activity {
         @Override
         public void run() {
             do {
+                if (bClose) {
+                    break;
+                }
                 try {
                     Thread.sleep(1000);
                     Message msg = new Message();
@@ -178,18 +181,19 @@ public class CameraTest extends Activity {
     private static final int ONE_SECOND_TIME_OUT = 1;
     private static final int VIDEO_TEST_TIME_OUT = 2;
     private long recLen = 0;
+    private boolean bClose = false;
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
             switch (msg.what) {
                 case ONE_SECOND_TIME_OUT:
                     recLen++;
-                    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-                    formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     CharSequence sysTimeStr = formatter.format(recLen * 1000);
                     mStartTimeView.setText(sysTimeStr);
                     mStartTimeView.setTextSize(60.0f);
-                    if (recLen % 5 == 0) {
+                    if (recLen % 5 == 0 && !bClose) {
                         try {
                             mCamera.takePicture(null, null, null, new PictureCallback() {
 
@@ -207,9 +211,14 @@ public class CameraTest extends Activity {
                     }
                     break;
                 case VIDEO_TEST_TIME_OUT:
-
+                    bClose = true;
+                    if (mCamera != null) {
+                        mCamera.release();
+                        mCamera = null;
+                    }
                     Intent intent = new Intent();
-                    intent.putExtra("time", recLen);
+                    CharSequence timeStr = formatter.format((recLen+1) * 1000);
+                    intent.putExtra("time", timeStr);
                     intent.putExtra("step", step);
                     CameraTest.this.setResult(RESULT_OK, intent);
                     CameraTest.this.finish();
@@ -233,6 +242,14 @@ public class CameraTest extends Activity {
         parameters.setFlashMode("on");
         mCamera.setParameters(parameters); // Setting camera parameters
         Log.i(TAG, "Camera.open");
+    }
+
+    protected void onDestroy() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        super.onDestroy();
     }
 
     @Override

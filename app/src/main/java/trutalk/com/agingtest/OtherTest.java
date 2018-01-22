@@ -251,11 +251,11 @@ public class OtherTest extends AppCompatActivity {
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
             switch (msg.what) {
                 case ONE_SECOND_TIME_OUT:
                     recLen++;
-                    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-                    formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     CharSequence sysTimeStr = formatter.format(recLen * 1000);
                     mStartTimeView.setText(sysTimeStr);
                     mStartTimeView.setTextSize(60.0f);
@@ -281,7 +281,8 @@ public class OtherTest extends AppCompatActivity {
                     //mAudioManager.setParameters("MelodyTestRCV=0");
                     mAudioManager.setMode(preMode);
                     Intent intent = new Intent();
-                    intent.putExtra("time", recLen);
+                    CharSequence timeStr = formatter.format((recLen+1) * 1000);
+                    intent.putExtra("time", timeStr);
                     intent.putExtra("step", step);
                     OtherTest.this.setResult(RESULT_OK, intent);
                     OtherTest.this.finish();

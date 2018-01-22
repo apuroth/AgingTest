@@ -1,7 +1,9 @@
 package trutalk.com.agingtest;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,10 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class FirstActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
 
+public class FirstActivity extends AppCompatActivity {
+    private String TAG = "AgingTest";
     CheckBox mSpeaker;
     CheckBox mReceiver;
     CheckBox mVibrate;
@@ -23,7 +28,9 @@ public class FirstActivity extends AppCompatActivity {
     EditText mItemTime;
     EditText mAllTime;
     Button mStartButton;
+    TextView mResultView;
 
+    int[] resId = {R.string.speaker, R.string.receiver,R.string.mic, R.string.vibrate,R.string.back_camera, R.string.front_camera,};
     int itemTime = 15;
     int allTime = 240;
 
@@ -34,6 +41,9 @@ public class FirstActivity extends AppCompatActivity {
     boolean mMicChecked = false;
     boolean mBackCameraChecked = false;
     boolean mFrontCameraChecked = false;
+    private String[] mResultValue = new String[7];
+
+    private MsgReceiver msgReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,47 @@ public class FirstActivity extends AppCompatActivity {
         mAllTime = (EditText) findViewById(R.id.all_time);
         mStartButton = (Button) findViewById(R.id.start);
         mStartButton.setOnClickListener(mButtonListener);
+        msgReceiver = new MsgReceiver();
+        mResultView = (TextView) findViewById(R.id.result);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.trutalk.agingtest.RECEIVER");
+        registerReceiver(msgReceiver, intentFilter);
+        Intent service = new Intent(FirstActivity.this, BootService.class);
+        FirstActivity.this.startService(service);
+    }
+
+
+    public class MsgReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String mBatteryInfos = "";
+            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss ");
+            String date = sDateFormat.format(new java.util.Date());
+            String battery_health = intent.getStringExtra("battery_health");
+            String battery_status = intent.getStringExtra("battery_status");
+            String battery_temperature = intent.getStringExtra("battery_temperature");
+            String battery_level = intent.getStringExtra("battery_level");
+            mBatteryInfos = mBatteryInfos + date + ", ";
+            if (battery_health != null) {
+                mBatteryInfos = mBatteryInfos + battery_health + ", ";
+            }
+            if (battery_status != null) {
+                mBatteryInfos = mBatteryInfos + battery_status + ", ";
+            }
+            if (battery_temperature != null) {
+                mBatteryInfos = mBatteryInfos + "温度：" + battery_temperature + ", ";
+            }
+            if (battery_temperature != null) {
+                mBatteryInfos = mBatteryInfos + "电量：" + battery_level + "%";
+            }
+
+            Log.i(TAG, mBatteryInfos);
+            mResultValue[6] = mBatteryInfos;
+            updateStateText();
+            saveTestLog(mBatteryInfos);
+        }
+
     }
 
     @Override
@@ -135,32 +186,36 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
-            long timeSecond = data.getLongExtra("time", 0);
+            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss ");
+            String date = sDateFormat.format(new java.util.Date());
+            String timeStr = data.getStringExtra("time");
             int step = data.getIntExtra("step", 0);
-            switch (step) {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                default:
-                    break;
-            }
+            mResultValue[step] = date + getText(resId[step]).toString() + ":" + timeStr;
+
             if (step < 5) {
                 StartTest(step + 1);
             } else {
 
             }
+            updateStateText();
+            saveTestLog(mResultValue[step]);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateStateText() {
+        String value = "";
+        for (String result : mResultValue) {
+            if (result != null) {
+                value += result + "\n";
+            }
+        }
+        mResultView.setText(value);
+    }
+
+    private void saveTestLog(String result) {
+
     }
 
     private PowerManager.WakeLock wakeLock = null;
