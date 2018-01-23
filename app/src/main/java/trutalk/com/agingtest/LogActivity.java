@@ -1,14 +1,14 @@
 package trutalk.com.agingtest;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
 
-public class LogActivity extends AppCompatActivity {
+public class LogActivity extends Activity {
 
     private TextView mTextView;
 

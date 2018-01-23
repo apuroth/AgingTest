@@ -1,5 +1,6 @@
 package trutalk.com.agingtest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -10,7 +11,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class OtherTest extends AppCompatActivity {
+public class OtherTest extends Activity {
 
     private String TAG = "AgingTest";
     private Vibrator mVibrator;

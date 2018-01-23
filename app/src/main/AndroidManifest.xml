@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="trutalk.com.agingtest"
-          android:sharedUserId="android.uid.system">
+          package="trutalk.com.agingtest">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
@@ -56,8 +55,7 @@
         <activity
             android:name=".FirstActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|mcc|mnc|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -67,20 +65,17 @@
         <activity
             android:name=".OtherTest"
             android:configChanges="orientation|keyboard|keyboardHidden|mcc|mnc|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".CameraTest"
             android:configChanges="orientation|keyboard|keyboardHidden|mcc|mnc|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".LogActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|mcc|mnc|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait">
         </activity>
 
         <receiver
@@ -90,7 +85,7 @@
             <intent-filter>
                 <action android:name="android.provider.Telephony.SECRET_CODE"/>
                 <data
-                    android:host="248378"
+                    android:host="2483"
                     android:scheme="android_secret_code"/>
             </intent-filter>
         </receiver>

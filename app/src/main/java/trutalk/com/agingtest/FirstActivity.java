@@ -1,19 +1,14 @@
 package trutalk.com.agingtest;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-//import android.os.IPersistLogCallback;
-//import android.os.IPersistLogService;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.RemoteException;
-//import android.os.ServiceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +25,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class FirstActivity extends AppCompatActivity {
+//import android.os.IPersistLogCallback;
+//import android.os.IPersistLogService;
+//import android.os.ServiceManager;
+
+public class FirstActivity extends Activity {
     private String TAG = "AgingTest";
     CheckBox mSpeaker;
     CheckBox mReceiver;
