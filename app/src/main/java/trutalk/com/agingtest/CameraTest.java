@@ -231,6 +231,11 @@ public class CameraTest extends Activity {
     });
 
     @Override
+    public void onBackPressed() {
+        return;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (mCamera != null) {

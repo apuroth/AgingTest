@@ -46,4 +46,5 @@
 
     <string name="last_test">测试结果:</string>
     <string name="test_warning">请选择测试选项</string>
+    <string name="read_log">查看log信息</string>
 </resources>

@@ -152,16 +152,14 @@ public class OtherTest extends AppCompatActivity {
 
 
     private void record() {
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-        mRecorder.setOutputFile(Environment.getExternalStorageDirectory() + File.separator + "sound.3pg");
         try {
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+            mRecorder.setOutputFile(Environment.getExternalStorageDirectory() + File.separator + "sound.3pg");
             mRecorder.prepare();
             mRecorder.start();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

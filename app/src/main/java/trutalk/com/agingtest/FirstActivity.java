@@ -4,18 +4,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.IBinder;
+//import android.os.IPersistLogCallback;
+//import android.os.IPersistLogService;
+import android.os.Message;
 import android.os.PowerManager;
+import android.os.RemoteException;
+//import android.os.ServiceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FirstActivity extends AppCompatActivity {
     private String TAG = "AgingTest";
@@ -30,7 +46,7 @@ public class FirstActivity extends AppCompatActivity {
     Button mStartButton;
     TextView mResultView;
 
-    int[] resId = {R.string.speaker, R.string.receiver,R.string.mic, R.string.vibrate,R.string.back_camera, R.string.front_camera,};
+    int[] resId = {R.string.speaker, R.string.receiver, R.string.mic, R.string.vibrate, R.string.back_camera, R.string.front_camera,};
     int itemTime = 15;
     int allTime = 240;
 
@@ -49,14 +65,22 @@ public class FirstActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireWakeLock();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_first);
         mSpeaker = (CheckBox) findViewById(R.id.speaker_box);
+        mSpeaker.setChecked(getResources().getBoolean(R.bool.speaker_test_enable));
         mReceiver = (CheckBox) findViewById(R.id.receiver_box);
+        mReceiver.setChecked(getResources().getBoolean(R.bool.receiver_test_enable));
         mVibrate = (CheckBox) findViewById(R.id.vibrate_box);
+        mVibrate.setChecked(getResources().getBoolean(R.bool.vibrator_test_enable));
         mMic = (CheckBox) findViewById(R.id.mic_box);
+        mMic.setChecked(getResources().getBoolean(R.bool.mic_test_enable));
         mBackCamera = (CheckBox) findViewById(R.id.back_camera_box);
+        mBackCamera.setChecked(getResources().getBoolean(R.bool.back_camera_test_enable));
         mFrontCamera = (CheckBox) findViewById(R.id.front_camera_box);
+        mFrontCamera.setChecked(getResources().getBoolean(R.bool.front_camera_test_enable));
         mItemTime = (EditText) findViewById(R.id.item_time);
+        mItemTime.setText(getResources().getText(R.string.single_item_test_time));
         mAllTime = (EditText) findViewById(R.id.all_time);
         mStartButton = (Button) findViewById(R.id.start);
         mStartButton.setOnClickListener(mButtonListener);
@@ -67,8 +91,29 @@ public class FirstActivity extends AppCompatActivity {
         registerReceiver(msgReceiver, intentFilter);
         Intent service = new Intent(FirstActivity.this, BootService.class);
         FirstActivity.this.startService(service);
+        if (getResources().getBoolean(R.bool.start_auto)) {
+            mStartButton.callOnClick();
+        }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.read:
+                Intent intent = new Intent();
+                intent.setClass(FirstActivity.this, LogActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
 
     public class MsgReceiver extends BroadcastReceiver {
 
@@ -130,7 +175,11 @@ public class FirstActivity extends AppCompatActivity {
 
     void StartTest(int step) {
         if (step > 5) {
-            return;
+            if (getResources().getBoolean(R.bool.cycle_test_enable)) {
+                StartTest(0);
+            } else {
+                return;
+            }
         }
         Intent intent = new Intent();
 
@@ -214,8 +263,87 @@ public class FirstActivity extends AppCompatActivity {
         mResultView.setText(value);
     }
 
-    private void saveTestLog(String result) {
+    public class SaveFileThread extends Thread {
+        String mResult = "";
 
+        SaveFileThread(String result) {
+            mResult = result + "\n";
+        }
+
+        @Override
+        public void run() {
+            try {
+                FileOutputStream fos = new FileOutputStream("/persist/misc/" + "AgingTest", true);
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
+                bw.write(mResult);
+                bw.flush();
+                bw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveTestLog(String result) {
+        Intent intent = new Intent();
+        intent.setAction("ACTION_AGING_TEST_RESULT");
+        intent.putExtra("fileName", "AgingTest");
+        intent.putExtra("content", result);
+//        this.sendBroadcast(intent);
+        new SaveFileThread(result).run();
+//        try {
+//            IPersistLogService logService = IPersistLogService.Stub.asInterface(ServiceManager.getService("PersistLogService"));
+//            Log.d(TAG, "getservice");
+//            if (logService != null) {
+//                Log.d(TAG, "PersistLogService write");
+//                logService.write("AgingTest", result);
+//            }
+//        } catch(RemoteException ex){
+//            Log.d(TAG, "RemoteException ex=" + ex);
+//        }
+    }
+
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 2:
+                    String data = (String) msg.obj;
+                    mResultView.setText("State: " + data);
+                    break;
+            }
+        }
+    };
+
+    private String getTestLog() {
+        String data = "";
+//        Intent intent = new Intent();
+//        intent.setAction("ACTION_AGING_TEST_RESULT");
+//        intent.putExtra("fileName", "AgingTest");
+//        intent.putExtra("content", result);
+//        this.sendBroadcast(intent);
+//        try {
+//            FileOutputStream fos = new FileOutputStream("/persist/misc/" + "AgingTest", true);
+//            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
+//            bw.write(result);
+//            bw.flush();
+//            bw.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        try {
+            FileInputStream fin = new FileInputStream("/persist/misc/" + "AgingTest");
+            int length = fin.available();
+            byte[] buffer = new byte[length];
+            fin.read(buffer);
+            data = new String(buffer, "UTF-8");
+            fin.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
     private PowerManager.WakeLock wakeLock = null;

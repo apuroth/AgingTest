@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="speaker_test_enable">true</bool>
+    <bool name="receiver_test_enable">true</bool>
+    <bool name="mic_test_enable">true</bool>
+    <bool name="vibrator_test_enable">true</bool>
+    <bool name="back_camera_test_enable">true</bool>
+    <bool name="front_camera_test_enable">true</bool>
+    <string name="single_item_test_time">15</string>
+    <bool name="cycle_test_enable">false</bool>
+    <bool name="start_auto">false</bool>
+</resources>
