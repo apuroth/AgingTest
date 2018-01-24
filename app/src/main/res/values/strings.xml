@@ -31,14 +31,14 @@
     <string name="battery_status_unknown">未知状态</string>
 
 
-    <string name="speaker">视频和扬声器</string>
-    <string name="receiver">视频和听筒</string>
+    <string name="speaker">扬声器</string>
+    <string name="receiver">听筒</string>
     <string name="vibrate">振动器</string>
     <string name="mic">麦克风</string>
     <string name="back_camera">后摄像头</string>
     <string name="front_camera">前摄像头</string>
-    <string name="item_time">单项测试时间:</string>
-    <string name="all_time">总持续时间:</string>
+    <string name="item_time">单项时间:</string>
+    <string name="all_time">总时间:</string>
 
     <string name="minute">分</string>
     <string name="default_item_time">15</string>

@@ -250,7 +250,7 @@ public class VideoTest extends Activity implements OnClickListener {
                     recLen++;
                     CharSequence sysTimeStr = formatter.format(recLen * 1000);
                     mStartTimeView.setText(sysTimeStr);
-                    mStartTimeView.setTextSize(60.0f);
+                    mStartTimeView.setTextSize(VideoTest.this.getResources().getDimensionPixelSize(R.dimen.time_text_size));
                     break;
                 case VIDEO_TEST_TIME_OUT:
                     if (mediaPlayer.isPlaying()) {
@@ -259,7 +259,7 @@ public class VideoTest extends Activity implements OnClickListener {
                         mediaPlayer.stop();
                     }
                     Intent intent = new Intent();
-                    CharSequence timeStr = formatter.format((recLen+1) * 1000);
+                    CharSequence timeStr = formatter.format(1000 * 60 * testTime);
                     intent.putExtra("time", timeStr);
                     intent.putExtra("step", step);
                     VideoTest.this.setResult(RESULT_OK, intent);

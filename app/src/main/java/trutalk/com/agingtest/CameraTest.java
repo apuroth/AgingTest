@@ -192,8 +192,8 @@ public class CameraTest extends Activity {
                     recLen++;
                     CharSequence sysTimeStr = formatter.format(recLen * 1000);
                     mStartTimeView.setText(sysTimeStr);
-                    mStartTimeView.setTextSize(60.0f);
-                    if (recLen % 5 == 0 && !bClose) {
+                    mStartTimeView.setTextSize(CameraTest.this.getResources().getDimensionPixelSize(R.dimen.time_text_size));
+                    if (recLen > 5 && recLen % 5 == 0 && !bClose) {
                         try {
                             mCamera.takePicture(null, null, null, new PictureCallback() {
 
@@ -213,11 +213,12 @@ public class CameraTest extends Activity {
                 case VIDEO_TEST_TIME_OUT:
                     bClose = true;
                     if (mCamera != null) {
+                        mCamera.stopPreview();
                         mCamera.release();
                         mCamera = null;
                     }
                     Intent intent = new Intent();
-                    CharSequence timeStr = formatter.format((recLen+1) * 1000);
+                    CharSequence timeStr = formatter.format(1000 * 60 * testTime);
                     intent.putExtra("time", timeStr);
                     intent.putExtra("step", step);
                     CameraTest.this.setResult(RESULT_OK, intent);
@@ -239,18 +240,38 @@ public class CameraTest extends Activity {
     protected void onResume() {
         super.onResume();
         if (mCamera != null) {
+            mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
         }
-        mCamera = Camera.open(mCameraIndex);
-        Camera.Parameters parameters = mCamera.getParameters(); // Camera parameters to obtain
-        parameters.setFlashMode("on");
-        mCamera.setParameters(parameters); // Setting camera parameters
-        Log.i(TAG, "Camera.open");
+        try {
+            mCamera = Camera.open(mCameraIndex);
+            Camera.Parameters parameters = mCamera.getParameters(); // Camera parameters to obtain
+            parameters.setFlashMode("on");
+            mCamera.setParameters(parameters); // Setting camera parameters
+            Log.i(TAG, "Camera.open");
+        } catch (Exception e) {
+            e.printStackTrace();
+            bClose = true;
+            if (mCamera != null) {
+                mCamera.stopPreview();
+                mCamera.release();
+                mCamera = null;
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Intent intent = new Intent();
+            CharSequence timeStr = formatter.format(recLen * 1000);
+            intent.putExtra("time", timeStr);
+            intent.putExtra("step", step);
+            CameraTest.this.setResult(RESULT_OK, intent);
+            CameraTest.this.finish();
+        }
     }
 
     protected void onDestroy() {
         if (mCamera != null) {
+            mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
         }

@@ -54,6 +54,13 @@ public class FirstActivity extends Activity {
     boolean mMicChecked = false;
     boolean mBackCameraChecked = false;
     boolean mFrontCameraChecked = false;
+
+    boolean mSpeakerEnable = true;
+    boolean mReceiverEnable = true;
+    boolean mVibrateEnable = true;
+    boolean mMicEnable = true;
+    boolean mBackCameraEnable = true;
+    boolean mFrontCameraEnable = true;
     private String[] mResultValue = new String[7];
 
     private MsgReceiver msgReceiver;
@@ -64,18 +71,54 @@ public class FirstActivity extends Activity {
         acquireWakeLock();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_first);
-        mSpeaker = (CheckBox) findViewById(R.id.speaker_box);
-        mSpeaker.setChecked(getResources().getBoolean(R.bool.speaker_test_enable));
-        mReceiver = (CheckBox) findViewById(R.id.receiver_box);
-        mReceiver.setChecked(getResources().getBoolean(R.bool.receiver_test_enable));
-        mVibrate = (CheckBox) findViewById(R.id.vibrate_box);
-        mVibrate.setChecked(getResources().getBoolean(R.bool.vibrator_test_enable));
-        mMic = (CheckBox) findViewById(R.id.mic_box);
-        mMic.setChecked(getResources().getBoolean(R.bool.mic_test_enable));
-        mBackCamera = (CheckBox) findViewById(R.id.back_camera_box);
-        mBackCamera.setChecked(getResources().getBoolean(R.bool.back_camera_test_enable));
-        mFrontCamera = (CheckBox) findViewById(R.id.front_camera_box);
-        mFrontCamera.setChecked(getResources().getBoolean(R.bool.front_camera_test_enable));
+        mSpeakerEnable = getResources().getBoolean(R.bool.speaker_test_enable);
+        mReceiverEnable = getResources().getBoolean(R.bool.receiver_test_enable);
+        mMicEnable = getResources().getBoolean(R.bool.mic_test_enable);
+        mVibrateEnable = getResources().getBoolean(R.bool.vibrator_test_enable);
+        mBackCameraEnable = getResources().getBoolean(R.bool.back_camera_test_enable);
+        mFrontCameraEnable = getResources().getBoolean(R.bool.front_camera_test_enable);
+        if (mSpeakerEnable) {
+            mSpeaker = (CheckBox) findViewById(R.id.speaker_box);
+            mSpeaker.setChecked(true);
+        } else {
+            View view = findViewById(R.id.speaker_item);
+            view.setVisibility(View.GONE);
+        }
+        if (mReceiverEnable) {
+            mReceiver = (CheckBox) findViewById(R.id.receiver_box);
+            mReceiver.setChecked(true);
+        } else {
+            View view = findViewById(R.id.receiver_item);
+            view.setVisibility(View.GONE);
+        }
+        if (mVibrateEnable) {
+            mVibrate = (CheckBox) findViewById(R.id.vibrate_box);
+            mVibrate.setChecked(true);
+        } else {
+            View view = findViewById(R.id.vibrate_item);
+            view.setVisibility(View.GONE);
+        }
+        if (mMicEnable) {
+            mMic = (CheckBox) findViewById(R.id.mic_box);
+            mMic.setChecked(true);
+        } else {
+            View view = findViewById(R.id.mic_item);
+            view.setVisibility(View.GONE);
+        }
+        if (mBackCameraEnable) {
+            mBackCamera = (CheckBox) findViewById(R.id.back_camera_box);
+            mBackCamera.setChecked(true);
+        } else {
+            View view = findViewById(R.id.back_camera_item);
+            view.setVisibility(View.GONE);
+        }
+        if (mFrontCameraEnable) {
+            mFrontCamera = (CheckBox) findViewById(R.id.front_camera_box);
+            mFrontCamera.setChecked(true);
+        } else {
+            View view = findViewById(R.id.front_camera_item);
+            view.setVisibility(View.GONE);
+        }
         mItemTime = (EditText) findViewById(R.id.item_time);
         mItemTime.setText(getResources().getText(R.string.single_item_test_time));
         mAllTime = (EditText) findViewById(R.id.all_time);
@@ -155,12 +198,12 @@ public class FirstActivity extends Activity {
 
         @Override
         public void onClick(View v) {
-            mSpeakerChecked = mSpeaker.isChecked();
-            mReceiverChecked = mReceiver.isChecked();
-            mVibrateChecked = mVibrate.isChecked();
-            mMicChecked = mMic.isChecked();
-            mBackCameraChecked = mBackCamera.isChecked();
-            mFrontCameraChecked = mFrontCamera.isChecked();
+            mSpeakerChecked = mSpeakerEnable && mSpeaker.isChecked();
+            mReceiverChecked = mReceiverEnable && mReceiver.isChecked();
+            mVibrateChecked = mVibrateEnable && mVibrate.isChecked();
+            mMicChecked = mMicEnable && mMic.isChecked();
+            mBackCameraChecked = mBackCameraEnable && mBackCamera.isChecked();
+            mFrontCameraChecked = mFrontCameraEnable && mFrontCamera.isChecked();
             itemTime = Integer.parseInt(mItemTime.getText().toString());
             if (!(mSpeakerChecked || mReceiverChecked || mVibrateChecked || mMicChecked || mBackCameraChecked || mFrontCameraChecked)) {
                 Toast.makeText(FirstActivity.this, R.string.test_warning, Toast.LENGTH_SHORT).show();
